@@ -1,0 +1,96 @@
+<div id='data'>
+</div>
+
+<script>
+    // Формируем JSON с SQL-командой
+    const body = {
+    "transaction": [
+     {
+     "query": "SELECT * FROM TEST_TABLE ORDER BY ID ASC"
+     },
+    ]
+    };
+
+    // Делаем запрос
+    var xhr = new XMLHttpRequest();
+    var url = "http://176.124.209.11:12321/testDb";
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    // Указываем функцию, которая будет вызвана, когда будет получен ответ
+    xhr.onreadystatechange = printResponse;
+
+    xhr.send(JSON.stringify(body));
+
+    // Эта функция автоматически вызовется, когда получим ответ
+    function printResponse() {
+        var d = document.getElementById("data")
+
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        var json = JSON.parse(xhr.responseText);
+        var s = "<TABLE>"
+
+         // и вот здесь формировать HTML ответа
+         //..
+        for (row in json["results"][0]["resultSet"]){
+            s += "<TR>"
+            s += "<TD>" + json["results"][0]["resultSet"][row]["ID"] + "</TD>" 
+            s += "<TD>" + json["results"][0]["resultSet"][row]["VAL"] + "</TD>"
+            s += "</TR>"
+        }
+        s += "</TABLE>"
+        alert(s)
+         d.innerHTML = s
+    } else {
+        
+        d.innerHTML = "<H1>ERROR!!!</H1>"
+    }
+}
+</script>
+
+//от Артемия (функция отправки в таблицу)
+
+<script>
+function insertData(){
+
+
+
+kn = document.getElementById('knif').value
+dur = document.getElementById('durabilit').value
+lic = document.getElementById('licenc').value
+request = INSERT INTO tori_table VALUES ('${dur}', '${kn}', '${lic}')
+
+// Формируем JSON с SQL-командой
+const body = {
+  "transaction": [
+  {
+    "query":  request 
+  },
+ ]
+};
+
+// Делаем запрос
+var xhr = new XMLHttpRequest();
+var url = "https://v1289560.hosted-by-vdsina.ru/testDb";
+xhr.open("POST", url, true);
+xhr.setRequestHeader("Content-Type", "application/json");
+
+
+xhr.send(JSON.stringify(body));
+}
+
+</script>
+
+//всё ещё от Артемия (ввод в таблицу)
+
+<label for="knif">Your Knife</label>
+<input type='text' id='knif' name = "knif"/><br><br>
+<label for="durabilit">Lifeness</label>
+<input type='text' id='durabilit' name = durabilit/><br><br>
+<label for="licenc">Licence</label>
+<input type='text' id='licenc' name = "licenc"/><br><br>
+<input type='button' value='Send the knife!' onClick = "insertData()"/>
+
+
+<div id='data'>
+here be dragons
+</div>
